@@ -17,4 +17,5 @@
         priv: "tooling.*:ALL"
   
   roles:
-    - geerlinguy.mysql
+    - geerlingguy.mysql
+

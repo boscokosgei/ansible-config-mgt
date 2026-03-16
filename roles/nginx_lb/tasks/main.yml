@@ -1,2 +1,16 @@
----
+
 # tasks file for roles/nginx_lb
+---
+- name: install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+  when: enable_nginx_lb
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: true
+  when: enable_nginx_lb

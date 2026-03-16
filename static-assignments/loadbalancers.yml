@@ -1,4 +1,4 @@
-- hosts: lb
+- hosts: loadbalancer
   roles:
-    - { role: nginx, when: enable_nginx_lb and load_balancer_is_required }
-    - { role: apache, when: enabled_apache_lb and load_balancer_is_required}
+    - { role: nginx_lb, when: (enable_nginx_lb | default(false)) and (load_balancer_is_required | default(false)) }
+    - { role: apache_lb, when: enabled_apache_lb | default(false)) and (load_balancer_is_required | default(false)) }
