@@ -1,0 +1,16 @@
+
+# tasks file for roles/apache_lb
+---
+- name: install apache
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+  when: enable_apache_lb
+
+- name: start apache
+  service:
+    name: apache2
+    state: started
+    enabled: true
+  when: enable_apache_lb
