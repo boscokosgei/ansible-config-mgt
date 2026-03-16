@@ -204,3 +204,109 @@ Updating Security Group on Port 80 for the website to be accessible
 
 Accessing the website using public ip of Uat webserver1
 ![Images](Uat-web1%20Server%20Accessible.png)
+
+
+## Ansible Dynamic Assignments
+Introducing Dynamic assignment into the structure
+Creating a new branch in the repo ansible-config-mgt called dynamic-assignment
+![Images](dynamic%20assignments%20branch.png)
+
+Create a new folder called dynamic-assignments
+![Images](dynamic-assignments%20folder.png)
+
+The structure of the folder should match below
+![Images](Folder-Structure.png)
+
+Updating env-vars.yml file
+![Images](env-vars.yml%20update.png)
+
+In the Playbook folder update site.yml file with dynamic-assignment 
+![Images](site-yml%20update.png)
+
+Git add dynamic branch and create a merge request
+![Images](git%20push%20dynamic%20branch.png)
+![Images](Merged%20PR.png)
+
+## Downloading Mysql Ansible Role on Jenkins Server
+
+ssh into the Jenkins-Ansible Server Instance and install mysql
+```sh
+cd ansible-config-mgt
+ansible-galaxy role install geerlingguy.mysql
+
+```
+![Images](installing%20geerlinguy-mysql.png)
+Git Pull from remote Repo and create a Branch called "roles-feature"
+
+![Images](git%20roles-feature%20branch.png)
+
+After Updating the .mysql file 
+```sh
+---
+- hosts: db
+  become: yes
+
+  vars:
+    mysql_root_password: rootpassword
+
+    mysql_databases:
+      - name: tooling
+        encoding: utf8
+        collation: utf8_general_ci
+
+    mysql_users:
+      - name: tooling
+        host: "%"
+        password: toolingpass
+        priv: "tooling.*:ALL"
+  
+  roles:
+    - geerlingguy.mysql
+
+
+```
+Pushing the code to Github
+![Images](pushing%20code-to-gihtub.png)
+
+Creating a Pull Request for the branch 
+![Images](create%20a%20PR%20for%20roles-feature.png)
+
+Merging the branch to main after resolving any conflict
+![Images](Roles-PR%20Merged.png)
+
+## Create LoadBalancer Roles
+On the Repo running the command to create the folders for apache and nginx loadbalancer with roles
+```sh
+ ansible-galaxy init roles/nginx_lb
+ ansible-galaxy init roles/apache_lb
+```
+![Images](roles-lb%20created.png)
+
+Declare a variable in defaults/main.yml inside nginx_lb and apache_lb with variables set to false
+```sh
+cd roles/nginx_lb/default/
+nano main.yml
+enable_nginx_lb: false
+enable_apache_lb: false
+```
+![Images](setting%20apache_defaultto%20false.png)
+
+
+Updating loadbalancer.yml file
+![Image](update%20loadbalncer-yml.png)
+
+Update Playbooks site.yml files
+![Images](update%20site-yml.png)
+
+Finally Update the uat.yml file in the dynamic env-vars folder to determine which loadbalancer to use.We will enable nginx
+![Images](update%20uat-yml.png)
+
+## Running Playbook
+after troubleshooting the playbook should be running by running the command
+```sh
+ ansible-playbook -i inventory/uat.ini playbooks/site.yml
+```
+![Images](Running%20Playbook%20site.yml.png)
+
+Confirm if mysql has been installed in UAT webserver and its running
+![Images](mysql%20running.png)
